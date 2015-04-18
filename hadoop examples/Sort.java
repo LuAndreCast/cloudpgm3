@@ -56,7 +56,7 @@ public class Sort<K,V> extends Configured implements Tool {
   static int printUsage() {
     System.out.println("sort [-m <maps>] [-r <reduces>] " +
                        "[-inFormat <input format class>] " +
-                       "[-outFormat <output format class>] " +
+                       "[-outFormat <output format class>] " + 
                        "[-outKey <output key class>] " +
                        "[-outValue <output value class>] " +
                        "[-totalOrder <pcnt> <num samples> <max splits>] " +
@@ -76,19 +76,20 @@ public class Sort<K,V> extends Configured implements Tool {
     JobConf jobConf = new JobConf(getConf(), Sort.class);
     jobConf.setJobName("sorter");
 
-    jobConf.setMapperClass(IdentityMapper.class);
+    jobConf.setMapperClass(IdentityMapper.class);        
     jobConf.setReducerClass(IdentityReducer.class);
-   JobClient client = new JobClient(jobConf);
+
+    JobClient client = new JobClient(jobConf);
     ClusterStatus cluster = client.getClusterStatus();
     int num_reduces = (int) (cluster.getMaxReduceTasks() * 0.9);
     String sort_reduces = jobConf.get("test.sort.reduces_per_host");
     if (sort_reduces != null) {
-       num_reduces = cluster.getTaskTrackers() *
+       num_reduces = cluster.getTaskTrackers() * 
                        Integer.parseInt(sort_reduces);
     }
-    Class<? extends InputFormat> inputFormatClass =
+    Class<? extends InputFormat> inputFormatClass = 
       SequenceFileInputFormat.class;
-    Class<? extends OutputFormat> outputFormatClass =
+    Class<? extends OutputFormat> outputFormatClass = 
       SequenceFileOutputFormat.class;
     Class<? extends WritableComparable> outputKeyClass = BytesWritable.class;
     Class<? extends Writable> outputValueClass = BytesWritable.class;
@@ -101,17 +102,16 @@ public class Sort<K,V> extends Configured implements Tool {
         } else if ("-r".equals(args[i])) {
           num_reduces = Integer.parseInt(args[++i]);
         } else if ("-inFormat".equals(args[i])) {
-          inputFormatClass =
+          inputFormatClass = 
             Class.forName(args[++i]).asSubclass(InputFormat.class);
         } else if ("-outFormat".equals(args[i])) {
-          outputFormatClass =
+          outputFormatClass = 
             Class.forName(args[++i]).asSubclass(OutputFormat.class);
         } else if ("-outKey".equals(args[i])) {
-          outputKeyClass =
+          outputKeyClass = 
             Class.forName(args[++i]).asSubclass(WritableComparable.class);
         } else if ("-outValue".equals(args[i])) {
-        } else if ("-outValue".equals(args[i])) {
-          outputValueClass =
+          outputValueClass = 
             Class.forName(args[++i]).asSubclass(Writable.class);
         } else if ("-totalOrder".equals(args[i])) {
           double pcnt = Double.parseDouble(args[++i]);
@@ -142,7 +142,7 @@ public class Sort<K,V> extends Configured implements Tool {
     jobConf.setOutputKeyClass(outputKeyClass);
     jobConf.setOutputValueClass(outputValueClass);
 
-  // Make sure there are exactly 2 parameters left.
+    // Make sure there are exactly 2 parameters left.
     if (otherArgs.size() != 2) {
       System.out.println("ERROR: Wrong number of parameters: " +
           otherArgs.size() + " instead of 2.");
@@ -167,7 +167,7 @@ public class Sort<K,V> extends Configured implements Tool {
 
     System.out.println("Running on " +
         cluster.getTaskTrackers() +
-        " nodes to sort from " +
+        " nodes to sort from " + 
         FileInputFormat.getInputPaths(jobConf)[0] + " into " +
         FileOutputFormat.getOutputPath(jobConf) +
         " with " + num_reduces + " reduces.");
@@ -176,7 +176,7 @@ public class Sort<K,V> extends Configured implements Tool {
     jobResult = JobClient.runJob(jobConf);
     Date end_time = new Date();
     System.out.println("Job ended: " + end_time);
-    System.out.println("The job took " +
+    System.out.println("The job took " + 
         (end_time.getTime() - startTime.getTime()) /1000 + " seconds.");
     return 0;
   }
@@ -187,6 +187,7 @@ public class Sort<K,V> extends Configured implements Tool {
     int res = ToolRunner.run(new Configuration(), new Sort(), args);
     System.exit(res);
   }
+
   /**
    * Get the last job that was run using this instance.
    * @return the results of the last job that was run

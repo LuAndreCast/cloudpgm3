@@ -29,13 +29,14 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.GenericOptionsParser;
 
-public class WordCount {
-  public static class TokenizerMapper
-       extends Mapper<Object, Text, Text, IntWritable>{
+public class WordCount2 {
 
+  public static class TokenizerMapper 
+       extends Mapper<Object, Text, Text, IntWritable>{
+    
     private final static IntWritable one = new IntWritable(1);
     private Text word = new Text();
-
+      
     public void map(Object key, Text value, Context context
                     ) throws IOException, InterruptedException {
       StringTokenizer itr = new StringTokenizer(value.toString());
@@ -45,12 +46,12 @@ public class WordCount {
       }
     }
   }
-
-  public static class IntSumReducer
+  
+  public static class IntSumReducer 
        extends Reducer<Text,IntWritable,Text,IntWritable> {
     private IntWritable result = new IntWritable();
 
-    public void reduce(Text key, Iterable<IntWritable> values,
+    public void reduce(Text key, Iterable<IntWritable> values, 
                        Context context
                        ) throws IOException, InterruptedException {
       int sum = 0;
@@ -61,6 +62,7 @@ public class WordCount {
       context.write(key, result);
     }
   }
+
   public static void main(String[] args) throws Exception {
     Configuration conf = new Configuration();
     String[] otherArgs = new GenericOptionsParser(conf, args).getRemainingArgs();
@@ -68,9 +70,9 @@ public class WordCount {
       System.err.println("Usage: wordcount <in> <out>");
       System.exit(2);
     }
-    System.err.println("ming's word count");
+    System.err.println("mings word count");
     Job job = new Job(conf, "word count");
-    job.setJarByClass(WordCount.class);
+    job.setJarByClass(WordCount2.class);
     job.setMapperClass(TokenizerMapper.class);
     job.setCombinerClass(IntSumReducer.class);
     job.setReducerClass(IntSumReducer.class);
@@ -81,5 +83,3 @@ public class WordCount {
     System.exit(job.waitForCompletion(true) ? 0 : 1);
   }
 }
-
-                            
