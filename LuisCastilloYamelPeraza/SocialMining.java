@@ -1,4 +1,10 @@
+/*
 
+  programmers:
+    Luis Castillo
+    Yamel Peraza
+*/
+    
 import java.io.IOException;
 import java.util.StringTokenizer;
 
